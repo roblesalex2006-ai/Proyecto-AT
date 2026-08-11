@@ -34,6 +34,8 @@ class StarWarsReaderApp {
     this.playPauseBtn = document.getElementById('play-pause-btn');
     this.playIcon = document.getElementById('play-icon');
     this.restartBtn = document.getElementById('restart-btn');
+    this.settingsBtn = document.getElementById('settings-btn');
+    this.slidersDrawer = document.getElementById('sliders-drawer');
     this.speedSlider = document.getElementById('speed-slider');
     this.speedVal = document.getElementById('speed-val');
     this.tiltSlider = document.getElementById('tilt-slider');
@@ -168,12 +170,29 @@ class StarWarsReaderApp {
       }
     });
 
-    // Restart
+    // Restart & Settings Toggle
     this.restartBtn.addEventListener('click', () => {
       this.audio.playLaserClick();
       this.scrollPos = window.innerHeight * 0.8;
       this.updateCrawlTransform();
     });
+
+    if (this.settingsBtn) {
+      this.settingsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.audio.playLaserClick();
+        this.slidersDrawer.classList.toggle('open');
+        this.settingsBtn.classList.toggle('active', this.slidersDrawer.classList.contains('open'));
+      });
+
+      // Close settings drawer when tapping outside
+      window.addEventListener('click', (e) => {
+        if (!this.slidersDrawer.contains(e.target) && e.target !== this.settingsBtn) {
+          this.slidersDrawer.classList.remove('open');
+          this.settingsBtn.classList.remove('active');
+        }
+      });
+    }
 
     // Sliders
     this.speedSlider.addEventListener('input', (e) => {
