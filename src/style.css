@@ -352,6 +352,35 @@ html, body {
   cursor: pointer;
 }
 
+.preset-row {
+  display: flex;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.preset-chip {
+  flex: 1;
+  padding: 4px 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(75, 213, 238, 0.3);
+  border-radius: 6px;
+  color: var(--sw-blue);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.preset-chip:hover, .preset-chip.active {
+  background: var(--sw-yellow);
+  color: #000;
+  border-color: var(--sw-yellow);
+  box-shadow: 0 0 8px var(--sw-yellow-glow);
+}
+
 .hud-btn {
   min-height: 42px;
   padding: 0 14px;

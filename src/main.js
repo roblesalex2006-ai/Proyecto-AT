@@ -209,7 +209,31 @@ class StarWarsReaderApp {
     this.tiltSlider.addEventListener('input', (e) => {
       this.tiltAngle = parseInt(e.target.value, 10);
       this.tiltVal.innerText = `${this.tiltAngle}°`;
+      
+      // Highlight matching preset chip if applicable
+      document.querySelectorAll('.preset-chip').forEach(chip => {
+        const val = parseInt(chip.getAttribute('data-angle'), 10);
+        chip.classList.toggle('active', val === this.tiltAngle);
+      });
+
       this.updateCrawlTransform();
+    });
+
+    // Preset Angle Chips
+    document.querySelectorAll('.preset-chip').forEach(chip => {
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.audio.playLaserClick();
+        const angle = parseInt(chip.getAttribute('data-angle'), 10);
+        this.tiltAngle = angle;
+        this.tiltSlider.value = angle;
+        this.tiltVal.innerText = `${angle}°`;
+        
+        document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        
+        this.updateCrawlTransform();
+      });
     });
 
     // Audio & TTS Toggles
@@ -392,6 +416,11 @@ class StarWarsReaderApp {
   }
 
   updateCrawlTransform() {
+    const isMobile = window.innerWidth <= 600;
+    const basePerspective = isMobile ? 260 : 380;
+    const dynamicPerspective = Math.max(160, basePerspective - (this.tiltAngle * 1.6));
+    
+    this.crawlViewport.style.perspective = `${dynamicPerspective}px`;
     this.crawlPlane.style.transform = `rotateX(${this.tiltAngle}deg) translateY(${-this.scrollPos}px)`;
   }
 
