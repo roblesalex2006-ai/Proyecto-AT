@@ -71,7 +71,10 @@ class StarWarsReaderApp {
 
   async loadDefaultFile() {
     try {
-      const response = await fetch('/Antiguo testamento.txt');
+      let response = await fetch('./Antiguo testamento.txt');
+      if (!response.ok) {
+        response = await fetch('./public/Antiguo testamento.txt');
+      }
       if (!response.ok) throw new Error('File fetch failed');
       const text = await response.text();
       this.processText(text);
