@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Star Wars Text Reader - Antiguo Testamento Galáctico</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=News+Cycle:wght@400;700&family=Orbitron:wght@500;700;900&family=Poller+One&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+
+  <!-- Starfield Canvas -->
+  <canvas id="starfield-canvas"></canvas>
+
+  <!-- Top Vignette Fade Effect (Star Wars Top Gradient) -->
+  <div class="top-vignette"></div>
+
+  <!-- Intro Screen: Blue Text & Scaling Logo -->
+  <div id="intro-screen" class="intro-screen">
+    <div id="intro-text" class="intro-text">
+      Hace mucho tiempo en una galaxia muy, muy lejana...
+    </div>
+    
+    <div id="logo-container" class="logo-container hidden">
+      <h1 class="sw-title">ANTIGUO TESTAMENTO</h1>
+      <h2 class="sw-subtitle">EDICIÓN GALÁCTICA</h2>
+    </div>
+
+    <button id="start-btn" class="start-btn">
+      <span class="btn-icon">▶</span> INICIAR SECUENCIA
+    </button>
+  </div>
+
+  <!-- Crawl Viewport Container -->
+  <main id="crawl-viewport" class="crawl-viewport">
+    <div id="crawl-plane" class="crawl-plane">
+      
+      <!-- Dynamic Crawl Header -->
+      <div class="crawl-header">
+        <h3 id="crawl-episode" class="crawl-episode">EPISODIO I</h3>
+        <h2 id="crawl-book-title" class="crawl-book-title">GÉNESIS</h2>
+        <h4 id="crawl-chapter-title" class="crawl-chapter-title">CAPÍTULO 1</h4>
+      </div>
+
+      <!-- Crawl Text Body -->
+      <div id="crawl-body" class="crawl-body">
+        <div class="loading-spinner">Cargando el Holocrón del Antiguo Testamento...</div>
+      </div>
+
+      <div class="crawl-footer">
+        <p>FIN DEL CAPÍTULO</p>
+        <p>★ QUE LA FUERZA TE ACOMPAÑE ★</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Floating Imperial Command Deck (HUD Controls) -->
+  <div id="hud-deck" class="hud-deck">
+
+    <!-- Primary Control Buttons -->
+    <div class="hud-group">
+      <button id="play-pause-btn" class="hud-btn" title="Reproducir / Pausar (Espacio)">
+        <span id="play-icon">⏸</span>
+      </button>
+
+      <button id="restart-btn" class="hud-btn" title="Reiniciar Rastreo">
+        ↺
+      </button>
+    </div>
+
+    <!-- Speed & Perspective Sliders -->
+    <div class="hud-group hud-sliders">
+      <div class="slider-control">
+        <label for="speed-slider">Velocidad <span id="speed-val">1.0x</span></label>
+        <input type="range" id="speed-slider" min="0.2" max="4.0" step="0.1" value="1.0">
+      </div>
+
+      <div class="slider-control">
+        <label for="tilt-slider">Ángulo 3D <span id="tilt-val">25°</span></label>
+        <input type="range" id="tilt-slider" min="0" max="60" step="1" value="25">
+      </div>
+    </div>
+
+    <!-- Audio & Voice Controls -->
+    <div class="hud-group">
+      <button id="audio-synth-btn" class="hud-btn toggle-btn active" title="Música y Ambiente Espacial">
+        🎵 Ambient
+      </button>
+
+      <button id="tts-btn" class="hud-btn toggle-btn" title="Lectura por Voz (Text-To-Speech)">
+        🗣️ Voz
+      </button>
+    </div>
+
+    <!-- Navigation & Search Tools -->
+    <div class="hud-group">
+      <button id="toc-toggle-btn" class="hud-btn highlight-btn" title="Seleccionar Libro y Capítulo">
+        📖 Libros
+      </button>
+
+      <button id="search-toggle-btn" class="hud-btn" title="Buscar en el Texto">
+        🔍 Buscar
+      </button>
+
+      <label for="file-input" class="hud-btn upload-btn" title="Cargar otro archivo de texto">
+        📁 Archivo
+        <input type="file" id="file-input" accept=".txt" style="display: none;">
+      </label>
+
+      <button id="fullscreen-btn" class="hud-btn" title="Pantalla Completa">
+        ⛶
+      </button>
+    </div>
+  </div>
+
+  <!-- Table of Contents Modal -->
+  <div id="toc-modal" class="modal hidden">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h3>HOLOCRÓN DE NAVEGACIÓN GALÁCTICA</h3>
+        <button id="close-toc-btn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="toc-controls">
+          <label for="book-select">Seleccionar Libro:</label>
+          <select id="book-select" class="sw-select"></select>
+
+          <label for="chapter-select">Seleccionar Capítulo:</label>
+          <select id="chapter-select" class="sw-select"></select>
+        </div>
+        <div id="toc-grid" class="toc-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Modal -->
+  <div id="search-modal" class="modal hidden">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h3>BÚSQUEDA DE ESCRITURAS</h3>
+        <button id="close-search-btn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Escribe una palabra o versículo (ej. Luz, Moisés, David)..." class="sw-input">
+          <button id="execute-search-btn" class="hud-btn highlight-btn">Buscar</button>
+        </div>
+        <div id="search-results" class="search-results">
+          <p class="search-placeholder">Introduce un término para explorar el Holocrón.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main JavaScript Application -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
